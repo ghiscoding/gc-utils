@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "gc-utils release script",
   "bin": {
-    "copyfiles": "src/cli.mjs"
+    "release": "src/cli.mjs"
   },
   "type": "module",
   "main": "./dist/index.mjs",
