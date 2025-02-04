@@ -1,5 +1,5 @@
 import { copyFileSync, renameSync } from 'node:fs';
-import { dirname as pDirname, join as pJoin, resolve as pResolve } from 'node:path';
+import { join as pJoin, resolve as pResolve } from 'node:path';
 import readline from 'node:readline';
 import { rimrafSync } from 'rimraf';
 import semver from 'semver';
@@ -16,6 +16,7 @@ const TAG_PREFIX = '';
 // const VERSION_PREFIX = 'v';
 const RELEASE_COMMIT_MSG = 'chore(release): publish version %s';
 
+const cwd = process.cwd();
 const projectRootPath = process.cwd();
 const pkg = readJSONSync(pJoin(projectRootPath, 'package.json'));
 
