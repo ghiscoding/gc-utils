@@ -1,0 +1,25 @@
+{
+  "name": "gc-utils",
+  "private": true,
+  "license": "MIT",
+  "author": "Ghislain B.",
+  "homepage": "https://github.com/ghiscoding/gc-utils",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghiscoding/gc-utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ghiscoding/gc-utils/issues"
+  },
+  "engines": {
+    "node": "^20.0.0"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "devDependencies": {
+    "pnpm": "^9.15.4"
+  },
+  "funding": {
+    "type": "ko_fi",
+    "url": "https://ko-fi.com/ghiscoding"
+  }
+}
