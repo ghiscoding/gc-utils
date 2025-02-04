@@ -5,8 +5,6 @@ import { fileURLToPath } from 'node:url';
 import { rimrafSync } from 'rimraf';
 import semver from 'semver';
 import c from 'tinyrainbow';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 
 import { updateChangelog } from './changelog.mjs';
 import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
@@ -19,8 +17,6 @@ const TAG_PREFIX = '';
 // const VERSION_PREFIX = 'v';
 const RELEASE_COMMIT_MSG = 'chore(release): publish version %s';
 
-const cwd = process.cwd();
-const argv = yargs(hideBin(process.argv)).argv;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = pDirname(__filename);
 const projectRootPath = pJoin(__dirname, '../');
@@ -59,10 +55,10 @@ function bumpVersion(bump) {
  * Update version property into "package.json"
  * @param {String} newVersion
  */
-function updatePackageVersion(newVersion) {
+function updatePackageVersion(newVersion, dryRun) {
   pkg.version = newVersion;
 
-  if (argv.dryRun) {
+  if (dryRun) {
     console.log(`${c.magenta('[dry-run]')}`);
   }
   writeJsonSync(pResolve(projectRootPath, 'package.json'), pkg, { spaces: 2 });
@@ -153,7 +149,7 @@ async function cleanPublishPackage() {
  * 1. Ask for version bump type
  * 2. Delete (empty) dist folder
  * 3. Bump version in "package.json"
- * 4. Run a prod build (TS + SASS)
+ * 4. Run a prod build npm script when provided
  * 5. Create/Update changelog.md
  * 6. Update (sync) npm lock file with new version
  * 7. Add all changed files to Git ("package.json", "CHANGELOG.md" and all minified files)
@@ -163,13 +159,13 @@ async function cleanPublishPackage() {
  * 11. NPM publish
  * 12. Create GitHub Release
  */
-export async function startReleasing() {
-  let dryRunPrefix = argv.dryRun ? '[dry-run]' : '';
+export async function startReleasing(options) {
+  let dryRunPrefix = options.dryRun ? '[dry-run]' : '';
   let newTag;
-  if (argv.dryRun) {
+  if (options.dryRun) {
     console.info(`-- ${c.bgMagenta('DRY-RUN')} mode --`);
   }
-  await hasUncommittedChanges(argv);
+  await hasUncommittedChanges(options);
 
   console.log(`🚀 Let's create a new release for "/${pkg.name}" (currently at ${pkg.version})\n`);
 
@@ -224,9 +220,11 @@ export async function startReleasing() {
     // 3. update package.json with new version
     await updatePackageVersion(newVersion);
 
-    // 4. run a prod build (TS + SASS)
-    console.log('Run Prod Build');
-    await spawnStreaming('pnpm', ['run', 'vue:build'], { cwd: projectRootPath });
+    // 4. run a prod build
+    if (options.buildScript) {
+      console.log('Run Prod Build');
+      await spawnStreaming('pnpm', ['run', options.buildScript], { cwd: projectRootPath });
+    }
 
     // 5. Create/Update changelog.md
     console.log('Updating Changelog');
@@ -240,10 +238,10 @@ export async function startReleasing() {
     );
 
     // 6. Update (sync) npm lock file
-    await syncLockFile({ cwd, dryRun: argv.dryRun });
+    await syncLockFile({ cwd, dryRun: options.dryRun });
 
     // 7. "git add ." all changed files
-    await gitAdd(null, { cwd, dryRun: argv.dryRun });
+    await gitAdd(null, { cwd, dryRun: options.dryRun });
 
     // show git changes to user so he can confirm the changes are ok
     const shouldCommitChanges = await promptConfirmation(
@@ -251,14 +249,14 @@ export async function startReleasing() {
     );
     if (shouldCommitChanges) {
       // 8. create git tag of new release
-      // await gitTag(newTag, { cwd, dryRun: argv.dryRun });
+      await gitTag(newTag, { cwd, dryRun: options.dryRun });
 
       // 9. Commit all files changed to git
-      await gitCommit(RELEASE_COMMIT_MSG.replace(/%s/g, newVersion), { cwd, dryRun: argv.dryRun });
+      await gitCommit(RELEASE_COMMIT_MSG.replace(/%s/g, newVersion), { cwd, dryRun: options.dryRun });
 
       // 10. Push git tags and all commits to origin
-      // await gitTagPushRemote(newTag, 'origin', { cwd, dryRun: argv.dryRun });
-      await gitPushToCurrentBranch('origin', { cwd, dryRun: argv.dryRun });
+      await gitTagPushRemote(newTag, 'origin', { cwd, dryRun: options.dryRun });
+      await gitPushToCurrentBranch('origin', { cwd, dryRun: options.dryRun });
 
       // 11. NPM publish
       if (await promptConfirmation(`${c.bgMagenta(dryRunPrefix)} Are you ready to publish "${newTag}" to npm?`)) {
@@ -274,7 +272,7 @@ export async function startReleasing() {
         }
 
         const otp = await promptOtp(dryRunPrefix);
-        await publishPackage(publishTagName, { cwd, otp, dryRun: argv.dryRun, stream: true });
+        await publishPackage(publishTagName, { cwd, otp, dryRun: options.dryRun, stream: true });
 
         // rename backup to original filename "package.json"
         console.log(`Renaming "package.json" backup file to its original name.`);
@@ -284,7 +282,7 @@ export async function startReleasing() {
       }
 
       // 13. Git sync/push all changes
-      await gitPushToCurrentBranch('origin', { cwd, dryRun: argv.dryRun });
+      await gitPushToCurrentBranch('origin', { cwd, dryRun: options.dryRun });
 
       // END
       console.log(`🏁 Done (in ${Math.floor(process.uptime())}s.)`);
