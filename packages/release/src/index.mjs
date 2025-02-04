@@ -1,7 +1,6 @@
 import { copyFileSync, renameSync } from 'node:fs';
 import { dirname as pDirname, join as pJoin, resolve as pResolve } from 'node:path';
 import readline from 'node:readline';
-import { fileURLToPath } from 'node:url';
 import { rimrafSync } from 'rimraf';
 import semver from 'semver';
 import c from 'tinyrainbow';
@@ -17,9 +16,7 @@ const TAG_PREFIX = '';
 // const VERSION_PREFIX = 'v';
 const RELEASE_COMMIT_MSG = 'chore(release): publish version %s';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = pDirname(__filename);
-const projectRootPath = pJoin(__dirname, '../');
+const projectRootPath = process.cwd();
 const pkg = readJSONSync(pJoin(projectRootPath, 'package.json'));
 
 /**
