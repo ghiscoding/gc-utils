@@ -163,6 +163,8 @@ export async function startReleasing(options) {
   if (options.dryRun) {
     console.info(`-- ${c.bgMagenta('DRY-RUN')} mode --`);
   }
+
+  // check if it has any uncommited changes (or skipped in dry-run mode)
   await hasUncommittedChanges(options);
 
   console.log(`🚀 Let's create a new release for "/${pkg.name}" (currently at ${pkg.version})\n`);
@@ -232,7 +234,10 @@ export async function startReleasing(options) {
         preset: 'angular',
         tagPrefix: TAG_PREFIX,
       },
-      newVersion
+      {
+        cwd: projectRootPath,
+        version: newVersion,
+      }
     );
 
     // 6. Update (sync) npm lock file

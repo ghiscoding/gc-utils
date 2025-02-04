@@ -2,7 +2,6 @@ import conventionalChangelog from 'conventional-changelog';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-const projectRootLocation = process.cwd();
 const EOL = '\n';
 const BLANK_LINE = EOL + EOL;
 const CHANGELOG_HEADER = [
@@ -14,10 +13,10 @@ const CHANGELOG_HEADER = [
 /**
  * Insert/Update "CHANGELOG.md" with conventional commits since last tagged version
  * @param { { infile: String, preset: String, tagPrefix: String } } args
- * @param {String} newVersion
+ * @param { { version: String, cwd: String }} options
  * @returns
  */
-export function updateChangelog(args, newVersion) {
+export function updateChangelog(args, options) {
   const default_args = { preset: 'angular' };
   args = Object.assign({}, default_args, args);
   const { infile, preset, tagPrefix } = args;
@@ -27,10 +26,10 @@ export function updateChangelog(args, newVersion) {
     let oldContent = '';
 
     // read changelog.md if it exist or else we'll create it
-    const changelogLocation = path.resolve(projectRootLocation, infile);
+    const changelogLocation = path.resolve(options.cwd, infile);
     const fileExist = existsSync(changelogLocation);
     if (fileExist) {
-      oldContent = readFileSync(path.resolve(projectRootLocation, infile), 'utf8');
+      oldContent = readFileSync(path.resolve(options.cwd, infile), 'utf8');
     }
 
     // find the position of the last release and remove header since we'll append it back on top
@@ -39,7 +38,7 @@ export function updateChangelog(args, newVersion) {
       oldContentWithoutHeader = oldContent.substring(CHANGELOG_HEADER.length);
     }
 
-    const context = { version: newVersion };
+    const context = { version: options.version };
     const changelogStream = conventionalChangelog(
       { preset, tagPrefix },
       context,

@@ -1,6 +1,6 @@
 {
   "name": "@gc-utils/release",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "gc-utils release script",
   "bin": {
     "release": "src/cli.mjs"
