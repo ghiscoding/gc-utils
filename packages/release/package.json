@@ -34,8 +34,8 @@
   },
   "scripts": {
     "build": "tsc --outDir dist",
-    "release": "node scripts/release.mjs",
-    "preview:copy": "node dist/cli.js test-copyin test-copyout --flat --verbose"
+    "preview:release": "node src/cli.mjs --dry-run --skip-checks --build-script build",
+    "release": "node src/cli.mjs --build-script build"
   },
   "dependencies": {
     "conventional-changelog": "^6.0.0",
