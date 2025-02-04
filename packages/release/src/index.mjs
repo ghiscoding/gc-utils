@@ -8,7 +8,7 @@ import c from 'tinyrainbow';
 import { updateChangelog } from './changelog.mjs';
 import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
 import { readJSONSync, writeJsonSync } from './fs-utils.mjs';
-import { gitAdd, gitCommit, gitPushToCurrentBranch, hasUncommittedChanges } from './git-utils.mjs';
+import { gitAdd, gitCommit, gitTag, gitTagPushRemote, gitPushToCurrentBranch, hasUncommittedChanges } from './git-utils.mjs';
 import { publishPackage, syncLockFile } from './npm-utils.mjs';
 
 const PUBLISH_CLEAN_FIELDS = ['devDependencies', 'scripts'];
@@ -221,7 +221,7 @@ export async function startReleasing(options) {
     // 4. run a prod build
     if (options.buildScript) {
       console.log('Run Prod Build');
-      await spawnStreaming('pnpm', ['run', options.buildScript], { cwd: projectRootPath });
+      await spawnStreaming(options.npmClient || 'npm', ['run', options.buildScript], { cwd: projectRootPath });
     }
 
     // 5. Create/Update changelog.md

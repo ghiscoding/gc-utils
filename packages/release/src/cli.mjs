@@ -15,6 +15,10 @@ const argv = cli
         type: 'string',
         description: 'optional npm build script',
     })
+    .option('npm-client', {
+        type: 'string',
+        description: 'npm client',
+    })
     .help('help')
     .alias('help', 'h')
     .alias('version', 'v')
