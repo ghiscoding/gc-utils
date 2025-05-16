@@ -27,7 +27,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ghiscoding/gc-utils.git",
-    "directory": "packages/copyfiles"
+    "directory": "packages/release"
   },
   "bugs": {
     "url": "https://github.com/ghiscoding/gc-utils/issues"
