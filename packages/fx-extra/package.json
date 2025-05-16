@@ -1,6 +1,6 @@
 {
   "name": "@gc-utils/fs-extra",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "some fs-extra util implementations",
   "type": "module",
   "main": "./src/fs-extra.mjs",
