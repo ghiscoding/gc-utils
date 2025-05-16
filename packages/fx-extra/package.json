@@ -28,16 +28,5 @@
   },
   "bugs": {
     "url": "https://github.com/ghiscoding/gc-utils/issues"
-  },
-  "scripts": {},
-  "dependencies": {
-    "conventional-changelog": "^6.0.0",
-    "rimraf": "^6.0.1",
-    "semver": "^7.7.1",
-    "tinyexec": "^0.3.2",
-    "tinyglobby": "^0.2.10",
-    "tinyrainbow": "^2.0.0",
-    "untildify": "^5.0.0",
-    "yargs": "^17.7.2"
   }
 }
