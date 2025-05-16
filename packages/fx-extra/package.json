@@ -1,19 +1,16 @@
 {
-  "name": "@gc-utils/release",
+  "name": "@gc-utils/fs-extra",
   "version": "0.1.5",
-  "description": "gc-utils release script",
-  "bin": {
-    "release": "src/cli.mjs"
-  },
+  "description": "some fs-extra util implementations",
   "type": "module",
-  "main": "./src/index.mjs",
+  "main": "./src/fs-extra.mjs",
   "exports": {
     ".": {
-      "import": "./src/index.mjs"
+      "import": "./src/fs-extra.mjs"
     },
     "./package.json": "./package.json"
   },
-  "module": "./src/index.mjs",
+  "module": "./src/fs-extra.mjs",
   "publishConfig": {
     "access": "public"
   },
@@ -32,13 +29,8 @@
   "bugs": {
     "url": "https://github.com/ghiscoding/gc-utils/issues"
   },
-  "scripts": {
-    "build": "tsc --outDir dist",
-    "preview:release": "node src/cli.mjs --dry-run --skip-checks --build-script build",
-    "release": "node src/cli.mjs --build-script build"
-  },
+  "scripts": {},
   "dependencies": {
-    "@gc-utils/fs-extra": "workspace:*",
     "conventional-changelog": "^6.0.0",
     "rimraf": "^6.0.1",
     "semver": "^7.7.1",

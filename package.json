@@ -12,12 +12,20 @@
     "url": "https://github.com/ghiscoding/gc-utils/issues"
   },
   "engines": {
-    "node": "^20.0.0"
+    "node": ">=20.0.0",
+    "pnpm": "10.x"
   },
-  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "preview:version": "lerna version --dry-run",
+    "preview:publish": "lerna publish from-package --dry-run",
+    "new-version": "lerna version",
+    "new-publish": "lerna publish from-package"
+  },
   "devDependencies": {
-    "pnpm": "^9.15.4"
+    "@lerna-lite/cli": "^4.1.1",
+    "@lerna-lite/publish": "^4.1.1"
   },
+  "packageManager": "pnpm@10.10.0",
   "funding": {
     "type": "ko_fi",
     "url": "https://ko-fi.com/ghiscoding"

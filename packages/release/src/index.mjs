@@ -1,3 +1,4 @@
+import { readJsonSync, writeJsonSync } from '@gc-utils/fs-extra';
 import { copyFileSync, renameSync } from 'node:fs';
 import { join as pJoin, resolve as pResolve } from 'node:path';
 import readline from 'node:readline';
@@ -7,7 +8,6 @@ import c from 'tinyrainbow';
 
 import { updateChangelog } from './changelog.mjs';
 import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
-import { readJSONSync, writeJsonSync } from './fs-utils.mjs';
 import { gitAdd, gitCommit, gitTag, gitTagPushRemote, gitPushToCurrentBranch, hasUncommittedChanges } from './git-utils.mjs';
 import { publishPackage, syncLockFile } from './npm-utils.mjs';
 
@@ -18,7 +18,7 @@ const RELEASE_COMMIT_MSG = 'chore(release): publish version %s';
 
 const cwd = process.cwd();
 const projectRootPath = process.cwd();
-const pkg = readJSONSync(pJoin(projectRootPath, 'package.json'));
+const pkg = readJsonSync(pJoin(projectRootPath, 'package.json'));
 
 /**
  * Use semver to increment the version given a bump type
