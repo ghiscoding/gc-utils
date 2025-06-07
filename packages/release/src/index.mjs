@@ -1,9 +1,8 @@
 import { readJsonSync, writeJsonSync } from '@gc-utils/fs-extra';
-import { copyFileSync, renameSync } from 'node:fs';
+import { copyFileSync, renameSync, rmSync } from 'node:fs';
 import { join as pJoin, resolve as pResolve } from 'node:path';
 import readline from 'node:readline';
 import { styleText } from 'node:util';
-import { rimrafSync } from 'rimraf';
 import semver from 'semver';
 
 import { updateChangelog } from './changelog.mjs';
@@ -215,7 +214,7 @@ export async function startReleasing(options) {
 
     // 2. delete (empty) dist folder
     console.log('Emptying dist folder');
-    rimrafSync('dist');
+    rmSync('dist', { recursive: true, force: true });
 
     // 3. update package.json with new version
     await updatePackageVersion(newVersion);
