@@ -7,6 +7,10 @@ import { startReleasing } from './index.mjs';
 const cli = yargs(process.argv.slice(2));
 const argv = cli
     .command('[option]', 'Run a release by bumping package version ')
+    .option('create-release', {
+        type: 'string',
+        description: 'create an official GitHub',
+    })
     .option('dry-run', {
         type: 'boolean',
         description: 'dry-run',
