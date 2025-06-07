@@ -2,9 +2,9 @@ import { readJsonSync, writeJsonSync } from '@gc-utils/fs-extra';
 import { copyFileSync, renameSync } from 'node:fs';
 import { join as pJoin, resolve as pResolve } from 'node:path';
 import readline from 'node:readline';
+import { styleText } from 'node:util';
 import { rimrafSync } from 'rimraf';
 import semver from 'semver';
-import c from 'tinyrainbow';
 
 import { updateChangelog } from './changelog.mjs';
 import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
@@ -57,7 +57,7 @@ function updatePackageVersion(newVersion, dryRun) {
   pkg.version = newVersion;
 
   if (dryRun) {
-    console.log(`${c.magenta('[dry-run]')}`);
+    console.log(styleText('magenta', '[dry-run]'));
   }
   writeJsonSync(pResolve(projectRootPath, 'package.json'), pkg, { spaces: 2 });
 
@@ -121,7 +121,7 @@ async function promptConfirmation(message, choices, defaultIndex) {
 
 async function promptOtp(dryRunPrefix = '') {
   const otp = await getConsoleInput(
-    `${c.bgMagenta(dryRunPrefix)} If you have an OTP (One-Time-Password), type it now or press "Enter" to continue: \n`
+    `${styleText('bgMagenta', dryRunPrefix)} If you have an OTP (One-Time-Password), type it now or press "Enter" to continue: \n`
   );
   if (!otp) {
     console.log('No OTP provided, continuing to next step...');
@@ -161,7 +161,7 @@ export async function startReleasing(options) {
   let dryRunPrefix = options.dryRun ? '[dry-run]' : '';
   let newTag;
   if (options.dryRun) {
-    console.info(`-- ${c.bgMagenta('DRY-RUN')} mode --`);
+    console.info(`-- ${styleText('bgMagenta', 'DRY-RUN')} mode --`);
   }
 
   // check if it has any uncommited changes (or skipped in dry-run mode)
@@ -183,7 +183,7 @@ export async function startReleasing(options) {
   for (const bumpType of bumpTypes) {
     versionIncrements.push({
       key: bumpType.bump,
-      name: `${bumpType.bump} (${c.bold(c.magenta(bumpVersion(bumpType.bump, false)))}) ${bumpType.desc}`,
+      name: `${bumpType.bump} (${styleText(['bold', 'magenta'], bumpVersion(bumpType.bump, false))}) ${bumpType.desc}`,
       value: bumpType.bump,
     });
   }
@@ -191,7 +191,7 @@ export async function startReleasing(options) {
 
   const defaultIdx = versionIncrements.length - 1;
   const whichBumpType = await promptConfirmation(
-    `${c.bgMagenta(dryRunPrefix)} Select increment to apply (next version)`,
+    `${styleText('bgMagenta', dryRunPrefix)} Select increment to apply (next version)`,
     versionIncrements,
     defaultIdx
   );
@@ -208,7 +208,7 @@ export async function startReleasing(options) {
     }
 
     newTag = `${TAG_PREFIX}${newVersion}`;
-    console.log(`${c.bgMagenta(dryRunPrefix)} Bumping new version to "${newTag}"`);
+    console.log(`${styleText('bgMagenta', dryRunPrefix)} Bumping new version to "${newTag}"`);
 
     console.log('Disable Husky');
     execAsyncPiped('HUSKY=0');
@@ -248,7 +248,7 @@ export async function startReleasing(options) {
 
     // show git changes to user so he can confirm the changes are ok
     const shouldCommitChanges = await promptConfirmation(
-      `${c.bgMagenta(dryRunPrefix)} Ready to release a version "${newTag}" and push commits to remote? Choose No to cancel.`
+      `${styleText('bgMagenta', dryRunPrefix)} Ready to release a version "${newTag}" and push commits to remote? Choose No to cancel.`
     );
     if (shouldCommitChanges) {
       // 8. create git tag of new release
@@ -262,7 +262,7 @@ export async function startReleasing(options) {
       await gitPushToCurrentBranch('origin', { cwd, dryRun: options.dryRun });
 
       // 11. NPM publish
-      if (await promptConfirmation(`${c.bgMagenta(dryRunPrefix)} Are you ready to publish "${newTag}" to npm?`)) {
+      if (await promptConfirmation(`${styleText('bgMagenta', dryRunPrefix)} Are you ready to publish "${newTag}" to npm?`)) {
         // create a copy of "package.json" to "package.json.backup" and remove (devDependencies, scripts) from "package.json"
         await cleanPublishPackage();
 
@@ -281,7 +281,19 @@ export async function startReleasing(options) {
         console.log(`Renaming "package.json" backup file to its original name.`);
         renameSync(pJoin(projectRootPath, 'package.json.backup'), pJoin(projectRootPath, 'package.json'));
 
-        console.log(`${c.bgMagenta(dryRunPrefix)} 📦 Published to NPM - 🔗 https://www.npmjs.com/package/${pkg.name}`.trim());
+        console.log(`${styleText('bgMagenta', dryRunPrefix)} 📦 Published to NPM - 🔗 https://www.npmjs.com/package/${pkg.name}`.trim());
+      }
+
+      // 12. Create GitHub Release
+      if (options.createRelease) {
+        const releaseNote = { name: pkg.name, notes: newChangelogEntry };
+        const releaseClient = createReleaseClient(options.createRelease);
+        await createRelease(
+          releaseClient,
+          { tag: newTag, releaseNote },
+          { gitRemote: 'origin', execOpts: { cwd } },
+          options.dryRun
+        );
       }
 
       // 13. Git sync/push all changes
