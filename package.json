@@ -12,7 +12,7 @@
     "url": "https://github.com/ghiscoding/gc-utils/issues"
   },
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=22.13.0",
     "pnpm": "10.x"
   },
   "scripts": {
@@ -22,8 +22,8 @@
     "new-publish": "lerna publish from-package"
   },
   "devDependencies": {
-    "@lerna-lite/cli": "^4.1.1",
-    "@lerna-lite/publish": "^4.1.1"
+    "@lerna-lite/cli": "^4.3.0",
+    "@lerna-lite/publish": "^4.3.0"
   },
   "packageManager": "pnpm@10.10.0",
   "funding": {
