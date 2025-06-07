@@ -227,17 +227,10 @@ export async function startReleasing(options) {
 
     // 5. Create/Update changelog.md
     console.log('Updating Changelog');
-    await updateChangelog(
-      {
-        infile: './CHANGELOG.md',
-        preset: 'angular',
-        tagPrefix: TAG_PREFIX,
-      },
-      {
-        cwd: projectRootPath,
-        version: newVersion,
-      }
-    );
+    const { newEntry: newChangelogEntry } = await updateChangelog({
+      infile: './CHANGELOG.md',
+      tagPrefix: TAG_PREFIX,
+    }, newVersion);
 
     // 6. Update (sync) npm lock file
     await syncLockFile({ cwd, dryRun: options.dryRun });
