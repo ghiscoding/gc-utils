@@ -7,6 +7,7 @@ import semver from 'semver';
 
 import { updateChangelog } from './changelog.mjs';
 import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
+import { createRelease, createReleaseClient, parseGitRepo } from './github-release.mjs';
 import { gitAdd, gitCommit, gitTag, gitTagPushRemote, gitPushToCurrentBranch, hasUncommittedChanges } from './git-utils.mjs';
 import { publishPackage, syncLockFile } from './npm-utils.mjs';
 
@@ -166,7 +167,8 @@ export async function startReleasing(options) {
   // check if it has any uncommited changes (or skipped in dry-run mode)
   await hasUncommittedChanges(options);
 
-  console.log(`🚀 Let's create a new release for "/${pkg.name}" (currently at ${pkg.version})\n`);
+  const repo = await parseGitRepo();
+  console.log(`🚀 Let's create a new release for "${repo.owner}/${repo.name}" (currently at ${pkg.version})\n`);
 
   // 1. choose bump type
   const bumpTypes = [
