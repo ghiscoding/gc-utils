@@ -34,13 +34,17 @@
   },
   "scripts": {
     "build": "echo build",
-    "preview:release": "node src/cli.mjs --dry-run --skip-checks --build-script build",
+    "preview:release": "node src/cli.mjs --dry-run --skip-checks --build-script build --create-release github",
     "release": "node src/cli.mjs --build-script build"
   },
   "dependencies": {
     "@gc-utils/fs-extra": "workspace:*",
+    "@octokit/rest": "^22.0.0",
     "conventional-changelog": "^7.0.2",
     "conventional-changelog-angular": "^8.0.0",
+    "dotenv": "^16.5.0",
+    "git-url-parse": "^16.1.0",
+    "new-github-release-url": "^2.0.0",
     "semver": "^7.7.2",
     "tinyexec": "^1.0.1",
     "tinyglobby": "^0.2.14",
