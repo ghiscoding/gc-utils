@@ -1,33 +1,32 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs/yargs';
-
 import { startReleasing } from './index.mjs';
+import { parseArgs } from './parse-args.mjs';
 
-const cli = yargs(process.argv.slice(2));
-const argv = cli
-    .command('[option]', 'Run a release by bumping package version ')
-    .option('create-release', {
-        type: 'string',
-        description: 'create an official GitHub',
-    })
-    .option('dry-run', {
-        type: 'boolean',
-        description: 'dry-run',
-    })
-    .option('build-script', {
-        type: 'string',
-        description: 'optional npm build script',
-    })
-    .option('npm-client', {
-        type: 'string',
-        description: 'npm client',
-    })
-    .help('help')
-    .alias('help', 'h')
-    .alias('version', 'v')
-    .version('0.1.6')
-    .parse();
+const options = {
+  createRelease: {
+    type: 'string',
+    description: 'create an official GitHub',
+  },
+  dryRun: {
+    type: 'boolean',
+    description: 'dry-run',
+  },
+  buildScript: {
+    type: 'string',
+    description: 'optional npm build script',
+  },
+  npmClient: {
+    type: 'string',
+    description: 'npm client',
+  },
+  skipChecks: {
+    type: 'boolean',
+    description: 'skip git checks',
+  },
+};
+
+const argv = parseArgs(options);
 
 // start the release
 startReleasing(argv);

@@ -235,7 +235,7 @@ export async function startReleasing(options) {
     }, newVersion);
 
     // 6. Update (sync) npm lock file
-    await syncLockFile({ cwd, dryRun: options.dryRun });
+    await syncLockFile({ cwd, dryRun: options.dryRun, npmClient: options.npmClient });
 
     // 7. "git add ." all changed files
     await gitAdd(null, { cwd, dryRun: options.dryRun });
@@ -269,7 +269,13 @@ export async function startReleasing(options) {
         }
 
         const otp = await promptOtp(dryRunPrefix);
-        await publishPackage(publishTagName, { cwd, otp, dryRun: options.dryRun, stream: true });
+        await publishPackage(publishTagName, {
+          cwd,
+          otp,
+          dryRun: options.dryRun,
+          npmClient: options.npmClient,
+          stream: true
+        });
 
         // rename backup to original filename "package.json"
         console.log(`Renaming "package.json" backup file to its original name.`);
