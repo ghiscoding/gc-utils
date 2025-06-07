@@ -6,7 +6,7 @@ import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
  * @param {{ cwd: String, dryRun: Boolean}} options
  * @returns {Promise<any>}
  */
-export function publishPackage(publishTagName, { cwd, otp, dryRun, stream }) {
+export function publishPackage(publishTagName, { cwd, otp, dryRun, stream, npmClient = 'npm' }) {
   const execArgs = ['publish'];
   if (publishTagName) {
     execArgs.push('--tag', publishTagName);
@@ -18,19 +18,24 @@ export function publishPackage(publishTagName, { cwd, otp, dryRun, stream }) {
     execArgs.push('--dry-run');
   }
 
-  // pnpm will not allow you to make a publish if you have changes in the repository
-  execArgs.push('--no-git-checks');
+  if (npmClient === 'pnpm') {
+    // pnpm will not allow you to make a publish if you have changes in the repository
+    execArgs.push('--no-git-checks');
+  }
 
   if (stream) {
-    return spawnStreaming('pnpm', execArgs, { cwd });
+    return spawnStreaming(npmClient, execArgs, { cwd });
   }
-  return execAsyncPiped('pnpm', execArgs, { cwd });
+  return execAsyncPiped(npmClient, execArgs, { cwd });
 }
 
 /**
  * @param {{ cwd: String, dryRun: Boolean}} options
  * @returns {Promise<any>}
  */
-export function syncLockFile({ cwd, dryRun }) {
-  return execAsyncPiped('pnpm', ['install', '--lockfile-only', '--ignore-scripts'], { cwd }, dryRun);
+export function syncLockFile({ cwd, dryRun, npmClient = 'npm' }) {
+  if (npmClient === 'pnpm') {
+    return execAsyncPiped('pnpm', ['install', '--lockfile-only', '--ignore-scripts'], { cwd }, dryRun);
+  }
+  return execAsyncPiped('npm', ['install', '--package-lock-only', '--legacy-peer-deps'], { cwd }, dryRun);
 }
