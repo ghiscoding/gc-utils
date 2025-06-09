@@ -34,7 +34,7 @@
   },
   "scripts": {
     "build": "echo build",
-    "preview:release": "node src/cli.mjs --dry-run --skip-checks --build-script build --create-release github",
+    "preview:release": "node src/cli.mjs --dry-run --skip-checks --build-script build --create-release github --provenance",
     "release": "node src/cli.mjs --build-script build"
   },
   "dependencies": {

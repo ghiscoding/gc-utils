@@ -272,8 +272,9 @@ export async function startReleasing(options) {
         await publishPackage(publishTagName, {
           cwd,
           otp,
-          dryRun: options.dryRun,
+          dryRun: !!options.dryRun,
           npmClient: options.npmClient,
+          provenance: !!options.provenance,
           stream: true
         });
 
