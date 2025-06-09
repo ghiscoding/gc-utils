@@ -1,4 +1,4 @@
-import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
+import { execAsyncPiped, logExecDryRunCommand, spawnStreaming } from './child-process.mjs';
 
 /**
  * Run `npm publish`
@@ -6,7 +6,7 @@ import { execAsyncPiped, spawnStreaming } from './child-process.mjs';
  * @param {{ cwd: String, dryRun: Boolean}} options
  * @returns {Promise<any>}
  */
-export function publishPackage(publishTagName, { cwd, otp, dryRun, stream, npmClient = 'npm' }) {
+export function publishPackage(publishTagName, { cwd, otp, dryRun, provenance, stream, npmClient = 'npm' }) {
   const execArgs = ['publish'];
   if (publishTagName) {
     execArgs.push('--tag', publishTagName);
@@ -17,10 +17,18 @@ export function publishPackage(publishTagName, { cwd, otp, dryRun, stream, npmCl
   if (dryRun) {
     execArgs.push('--dry-run');
   }
+  if (provenance) {
+    execArgs.push('--provenance');
+  }
 
   if (npmClient === 'pnpm') {
     // pnpm will not allow you to make a publish if you have changes in the repository
     execArgs.push('--no-git-checks');
+  }
+
+  // in dry-run mode, we are still executing the actual command, but let's log it as well to the console
+  if (dryRun) {
+    logExecDryRunCommand(npmClient, execArgs);
   }
 
   if (stream) {

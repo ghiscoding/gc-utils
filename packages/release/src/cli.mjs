@@ -6,11 +6,11 @@ import { parseArgs } from './parse-args.mjs';
 const options = {
   createRelease: {
     type: 'string',
-    description: 'create an official GitHub',
+    description: 'create an official GitHub release',
   },
   dryRun: {
     type: 'boolean',
-    description: 'dry-run',
+    description: 'test the release process without making any changes or publishing any packages',
   },
   buildScript: {
     type: 'string',
@@ -18,11 +18,16 @@ const options = {
   },
   npmClient: {
     type: 'string',
-    description: 'npm client',
+    description: 'npm client currently used (npm, yarn, pnpm)',
+    default: 'npm',
+  },
+  provenance: {
+    type: 'boolean',
+    description: 'generate provenance statements for the packages you publish'
   },
   skipChecks: {
     type: 'boolean',
-    description: 'skip git checks',
+    description: 'skip git checks like uncommitted changes, etc.',
   },
 };
 
