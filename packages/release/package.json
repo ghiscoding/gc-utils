@@ -40,15 +40,14 @@
   "dependencies": {
     "@gc-utils/fs-extra": "workspace:*",
     "@octokit/rest": "^22.0.0",
-    "conventional-changelog": "^7.0.2",
+    "conventional-changelog": "^7.1.1",
     "conventional-changelog-angular": "^8.0.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.2",
     "git-url-parse": "^16.1.0",
     "new-github-release-url": "^2.0.0",
     "semver": "^7.7.2",
     "tinyexec": "^1.0.1",
-    "tinyglobby": "^0.2.14",
-    "untildify": "^5.0.0"
+    "tinyglobby": "^0.2.15"
   },
   "engines": {
     "node": ">=22.13.0"
