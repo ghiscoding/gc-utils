@@ -1,6 +1,6 @@
 {
   "name": "@gc-utils/eslint-plugin-import-ext",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Enforce file extension style in import declarations (fixable with --fix)",
   "keywords": [
     "eslint",
@@ -16,7 +16,7 @@
     }
   },
   "module": "./index.mjs",
-    "publishConfig": {
+  "publishConfig": {
     "access": "public"
   },
   "files": [

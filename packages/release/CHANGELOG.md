@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/ghiscoding/gc-utils/compare/@gc-utils/release@0.4.0...@gc-utils/release@0.4.1) (2026-05-20)
+
+**Note:** Version bump only for package @gc-utils/release
+
 # 0.4.0 (2025-09-27)
 
 ### Bug Fixes
