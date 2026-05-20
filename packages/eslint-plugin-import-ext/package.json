@@ -33,7 +33,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ghiscoding/gc-utils.git",
-    "directory": "packages/fs-extra"
+    "directory": "packages/eslint-plugin-import-ext"
   },
   "bugs": {
     "url": "https://github.com/ghiscoding/gc-utils/issues"
